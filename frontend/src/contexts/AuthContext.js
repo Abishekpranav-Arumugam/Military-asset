@@ -85,10 +85,11 @@ export const AuthProvider = ({ children }) => {
       dispatch({ type: 'LOGIN_SUCCESS', payload: response.data });
       return { success: true };
     } catch (error) {
+      console.error('Login error:', error);
       dispatch({ type: 'AUTH_ERROR' });
       return { 
         success: false, 
-        message: error.response?.data?.message || 'Login failed' 
+        message: error.response?.data?.message || 'Login failed - Check network connection' 
       };
     }
   };

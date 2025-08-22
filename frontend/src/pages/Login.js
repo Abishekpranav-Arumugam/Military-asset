@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom';
 import { toast } from 'react-toastify';
 import { EyeIcon, EyeSlashIcon, UserIcon, KeyIcon } from '@heroicons/react/24/outline';
 
@@ -8,6 +9,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
+  const navigate = useNavigate();
   
   const {
     register,
@@ -29,6 +31,7 @@ const Login = () => {
       const result = await login(data);
       if (result.success) {
         toast.success('Login successful!');
+        navigate('/dashboard');
       } else {
         toast.error(result.message);
       }

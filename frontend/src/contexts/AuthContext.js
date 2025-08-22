@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useReducer, useEffect } from 'react';
-import axios from 'axios';
+import api from '../config/api';
 
 const AuthContext = createContext();
 
@@ -59,14 +59,7 @@ const authReducer = (state, action) => {
 export const AuthProvider = ({ children }) => {
   const [state, dispatch] = useReducer(authReducer, initialState);
 
-  // Set auth token in axios headers
-  useEffect(() => {
-    if (state.token) {
-      axios.defaults.headers.common['Authorization'] = `Bearer ${state.token}`;
-    } else {
-      delete axios.defaults.headers.common['Authorization'];
-    }
-  }, [state.token]);
+  // Auth token is handled by api interceptor
 
   // Load user on app start
   useEffect(() => {
@@ -79,7 +72,7 @@ export const AuthProvider = ({ children }) => {
 
   const loadUser = async () => {
     try {
-      const response = await axios.get('/api/auth/profile');
+      const response = await api.get('/api/auth/profile');
       dispatch({ type: 'LOAD_USER', payload: response.data.user });
     } catch (error) {
       dispatch({ type: 'AUTH_ERROR' });
@@ -88,7 +81,7 @@ export const AuthProvider = ({ children }) => {
 
   const login = async (credentials) => {
     try {
-      const response = await axios.post('/api/auth/login', credentials);
+      const response = await api.post('/api/auth/login', credentials);
       dispatch({ type: 'LOGIN_SUCCESS', payload: response.data });
       return { success: true };
     } catch (error) {
@@ -102,7 +95,7 @@ export const AuthProvider = ({ children }) => {
 
   const logout = async () => {
     try {
-      await axios.post('/api/auth/logout');
+      await api.post('/api/auth/logout');
     } catch (error) {
       console.error('Logout error:', error);
     } finally {
@@ -112,7 +105,7 @@ export const AuthProvider = ({ children }) => {
 
   const register = async (userData) => {
     try {
-      const response = await axios.post('/api/auth/register', userData);
+      const response = await api.post('/api/auth/register', userData);
       dispatch({ type: 'LOGIN_SUCCESS', payload: response.data });
       return { success: true };
     } catch (error) {

@@ -14,6 +14,7 @@ const authReducer = (state, action) => {
   switch (action.type) {
     case 'LOGIN_SUCCESS':
       localStorage.setItem('token', action.payload.token);
+      console.log('LOGIN_SUCCESS - Setting isAuthenticated to true');
       return {
         ...state,
         user: action.payload.user,
@@ -82,6 +83,7 @@ export const AuthProvider = ({ children }) => {
   const login = async (credentials) => {
     try {
       const response = await api.post('/api/auth/login', credentials);
+      console.log('Login response:', response.data);
       dispatch({ type: 'LOGIN_SUCCESS', payload: response.data });
       return { success: true };
     } catch (error) {

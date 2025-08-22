@@ -29,13 +29,16 @@ const Login = () => {
     setIsLoading(true);
     try {
       const result = await login(data);
+      console.log('Login result:', result);
       if (result.success) {
         toast.success('Login successful!');
-        navigate('/dashboard');
+        // Force page reload to ensure state is properly updated
+        window.location.href = '/dashboard';
       } else {
         toast.error(result.message);
       }
     } catch (error) {
+      console.error('Login submit error:', error);
       toast.error('Login failed. Please try again.');
     } finally {
       setIsLoading(false);

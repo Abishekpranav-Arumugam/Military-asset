@@ -28,6 +28,10 @@ connectDB();
 // Security middleware
 app.use(helmet());
 
+// When running behind a proxy/load balancer (Vercel/Render), trust the proxy
+// Fixes express-rate-limit X-Forwarded-For validation warning
+app.set('trust proxy', 1);
+
 // Rate limiting
 const limiter = rateLimit({
   windowMs: parseInt(process.env.RATE_LIMIT_WINDOW_MS) || 15 * 60 * 1000, // 15 minutes
@@ -39,12 +43,33 @@ const limiter = rateLimit({
 app.use(limiter);
 
 // CORS configuration
-app.use(cors({
-  origin: process.env.NODE_ENV === 'production' 
-    ? ['https://military-asset-fb96.vercel.app'] 
-    : ['http://localhost:3000', 'http://127.0.0.1:3000'],
-  credentials: true
-}));
+const defaultAllowedOrigins = [
+  'http://localhost:3000',
+  'http://127.0.0.1:3000',
+  'https://military-asset-plum.vercel.app',
+];
+
+// Optionally override allowed origins via comma-separated env var
+const envAllowed = (process.env.ALLOWED_ORIGINS || '')
+  .split(',')
+  .map((s) => s.trim())
+  .filter(Boolean);
+
+const allowedOrigins = envAllowed.length > 0 ? envAllowed : defaultAllowedOrigins;
+
+const corsOptions = {
+  origin: (origin, callback) => {
+    // Allow non-browser clients or same-origin requests
+    if (!origin) return callback(null, true);
+    const isAllowed =
+      allowedOrigins.includes(origin) ||
+      /\.vercel\.app$/.test(origin); // allow Vercel preview deployments
+    return callback(isAllowed ? null : new Error('Not allowed by CORS'), isAllowed);
+  },
+  credentials: true,
+};
+
+app.use(cors(corsOptions));
 
 // Body parsing middleware
 app.use(express.json({ limit: '10mb' }));

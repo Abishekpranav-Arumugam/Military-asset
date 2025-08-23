@@ -1,8 +1,16 @@
 import axios from 'axios';
 
+// Determine base URL
+const hostBase = process.env.REACT_APP_API_URL; // e.g., https://military-asset-zvhu.onrender.com
+let baseURL = '/api'; // default for local dev with proxy/backend on same origin
+if (hostBase) {
+  const trimmed = hostBase.replace(/\/$/, '');
+  baseURL = `${trimmed}/api`;
+}
+
 // Centralized Axios instance
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_BASE_URL || '/api',
+  baseURL,
   timeout: 15000,
   withCredentials: false,
 });

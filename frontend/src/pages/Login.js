@@ -58,7 +58,7 @@ const Login = () => {
         <div className="bg-white/10 backdrop-blur-lg rounded-2xl shadow-2xl border border-white/20 p-8">
           <div className="text-center mb-8">
             <div className="mx-auto h-20 w-20 bg-gradient-to-br from-blue-500 to-purple-600 rounded-full flex items-center justify-center shadow-lg">
-              <span className="text-white font-bold text-2xl">MAMS</span>
+              <span className="text-white font-bold text-2xl">Military Asset</span>
             </div>
             <h2 className="mt-6 text-3xl font-bold text-white">
               Military Asset Management

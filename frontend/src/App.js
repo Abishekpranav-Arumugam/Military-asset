@@ -18,6 +18,8 @@ import LoadingSpinner from './components/LoadingSpinner';
 function App() {
   const { isAuthenticated, loading } = useAuth();
 
+  console.log('App render - isAuthenticated:', isAuthenticated, 'loading:', loading);
+
   if (loading) {
     return <LoadingSpinner />;
   }
@@ -32,6 +34,7 @@ function App() {
       ) : (
         <Layout>
           <Routes>
+            <Route path="/login" element={<Navigate to="/dashboard" replace />} />
             <Route path="/" element={<Navigate to="/dashboard" replace />} />
             <Route path="/dashboard" element={<Dashboard />} />
             <Route path="/purchases" element={<Purchases />} />

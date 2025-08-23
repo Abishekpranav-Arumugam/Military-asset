@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { useAuth } from '../contexts/AuthContext';
+import { useNavigate } from 'react-router-dom'; // 1. useNavigate is already imported, so we'll use it
 import { toast } from 'react-toastify';
 import { EyeIcon, EyeSlashIcon, UserIcon, KeyIcon } from '@heroicons/react/24/outline';
 
@@ -8,6 +9,7 @@ const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const { login } = useAuth();
+  const navigate = useNavigate(); // Initialize the hook
   
   const {
     register,
@@ -29,10 +31,16 @@ const Login = () => {
       const result = await login(data);
       if (result.success) {
         toast.success('Login successful!');
+        
+        // 2. The Fix: Replace the hard page reload with client-side navigation
+        navigate('/dashboard', { replace: true }); 
+        // { replace: true } prevents the user from going back to the login page with the browser's back button.
+
       } else {
         toast.error(result.message);
       }
     } catch (error) {
+      console.error('Login submit error:', error);
       toast.error('Login failed. Please try again.');
     } finally {
       setIsLoading(false);

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from 'react-query';
 import { useForm } from 'react-hook-form';
-import axios from 'axios';
+import api from '../api';
 import { toast } from 'react-toastify';
 import { PlusIcon, ArrowRightIcon } from '@heroicons/react/24/outline';
 import DatePicker from 'react-datepicker';
@@ -28,34 +28,25 @@ const Transfers = () => {
       if (filters.endDate) params.append('endDate', filters.endDate.toISOString());
       if (filters.assetCategory) params.append('assetCategory', filters.assetCategory);
       
-      const response = await axios.get(`/api/transactions?${params}`);
+      const response = await api.get(`/transactions?${params}`);
       return response.data;
     }
   );
 
   // Fetch assets and bases for dropdowns
   const { data: assets } = useQuery('assets', async () => {
-    return [
-      { _id: '66c7b8f4e1234567890abcd1', name: 'M4 Carbine', category: 'weapon' },
-      { _id: '66c7b8f4e1234567890abcd2', name: 'Humvee', category: 'vehicle' },
-      { _id: '66c7b8f4e1234567890abcd3', name: '5.56mm Ammunition', category: 'ammunition' },
-      { _id: '66c7b8f4e1234567890abcd4', name: 'Body Armor', category: 'equipment' },
-      { _id: '66c7b8f4e1234567890abcd5', name: 'MRE', category: 'supplies' }
-    ];
+    const res = await api.get('/assets', { params: { isActive: true, limit: 1000 } });
+    return res.data.assets;
   });
 
   const { data: bases } = useQuery('bases', async () => {
-    return [
-      { _id: '66c7b8f4e1234567890abce1', name: 'Fort Bragg', code: 'FB' },
-      { _id: '66c7b8f4e1234567890abce2', name: 'Camp Pendleton', code: 'CP' },
-      { _id: '66c7b8f4e1234567890abce3', name: 'Fort Hood', code: 'FH' },
-      { _id: '66c7b8f4e1234567890abce4', name: 'Fort Campbell', code: 'FC' }
-    ];
+    const res = await api.get('/bases', { params: { isActive: true, limit: 1000 } });
+    return res.data.bases;
   });
 
   // Create transfer mutation
   const createTransferMutation = useMutation(
-    (transferData) => axios.post('/api/transactions/transfer', transferData),
+    (transferData) => api.post('/transactions/transfer', transferData),
     {
       onSuccess: () => {
         queryClient.invalidateQueries('transfers');

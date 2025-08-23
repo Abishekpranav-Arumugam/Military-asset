@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../contexts/AuthContext';
 import LoadingSpinner from '../components/LoadingSpinner';
 import {
   MagnifyingGlassIcon,
@@ -11,7 +10,6 @@ import {
 } from '@heroicons/react/24/outline';
 
 const AuditLogs = () => {
-  const { user } = useAuth();
   const [auditLogs, setAuditLogs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

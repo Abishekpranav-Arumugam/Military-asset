@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from 'react';
-import { useAuth } from '../contexts/AuthContext';
 import LoadingSpinner from '../components/LoadingSpinner';
 import {
   PlusIcon,
@@ -14,7 +13,6 @@ import {
 } from '@heroicons/react/24/outline';
 
 const Maintenance = () => {
-  const { user } = useAuth();
   const [maintenance, setMaintenance] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');

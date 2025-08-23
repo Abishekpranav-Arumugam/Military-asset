@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useQuery } from 'react-query';
-import axios from 'axios';
+import api from '../api';
 import { useAuth } from '../contexts/AuthContext';
 import {
   ChartBarIcon,
@@ -30,7 +30,7 @@ const Dashboard = () => {
       if (filters.assetCategory) params.append('assetCategory', filters.assetCategory);
       if (filters.baseId) params.append('baseId', filters.baseId);
       
-      const response = await axios.get(`/api/dashboard/metrics?${params}`);
+      const response = await api.get(`/dashboard/metrics?${params}`);
       return response.data;
     },
     { refetchInterval: 30000 }
